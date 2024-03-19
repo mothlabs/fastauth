@@ -31,3 +31,5 @@ class FastAuth:
             )
 
             return RegisterUserResponse(user=user)
+
+        logger.info(f"Registered routers for FastAuth at '{self.router.prefix}'")

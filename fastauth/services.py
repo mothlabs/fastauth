@@ -53,4 +53,6 @@ class AuthenticationService:
         )
         await user.save()
 
+        logger.info(f"Registered user with email '{email}'.")
+
         return user
