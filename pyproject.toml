@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "fastauth"
+version = "0.1.0"
+description = "FastAuth is a in-house FastAPI authentication library that simplifiesthe process of handling user authentication."
+authors = ["Chorlte my balls <philmattdev@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+beanie = "^1.25.0"
+fastapi = "^0.110.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
