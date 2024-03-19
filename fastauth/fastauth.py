@@ -1,6 +1,7 @@
 from fastapi import APIRouter, FastAPI
 
 from fastauth.models.user import FastUser
+from fastauth.services import AuthenticationService
 
 
 class FastAuth:
@@ -12,6 +13,7 @@ class FastAuth:
     ) -> None:
         self.user_model = user_model
         self.router = APIRouter(prefix=prefix, tags=tags or ["auth"])
+        self.service = AuthenticationService()
 
     def register(self, app: FastAPI) -> None:
         app.include_router(self.router)
