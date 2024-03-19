@@ -16,3 +16,11 @@ class UserDoesNotExist(HTTPException):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"A user with the email '{email}' does not exist.",
         )
+
+
+class Unauthenticated(HTTPException):
+    def __init__(self) -> None:
+        super().__init__(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="You are not authenticated.",
+        )
