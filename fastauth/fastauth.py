@@ -1,13 +1,17 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, FastAPI
 
-router = APIRouter(prefix="/auth", tags=["Authentication"])
-
-
-@router.post("/register")
-async def register():
-    pass
+from fastauth.models.user import FastUser
 
 
-@router.post("/login")
-async def login():
-    pass
+class FastAuth:
+    def __init__(
+        self,
+        user_model: FastUser,
+        prefix: str = "/auth",
+        tags: list[str] | None = None,
+    ) -> None:
+        self.user_model = user_model
+        self.router = APIRouter(prefix=prefix, tags=tags or ["auth"])
+
+    def register_router(self, app: FastAPI):
+        app.include_router(self.router)
