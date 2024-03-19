@@ -19,6 +19,7 @@ class FastAuth:
         self.service = AuthenticationService(user_model=user_model)
 
     def register(self, app: FastAPI) -> None:
+        self._register_routers()
         app.include_router(self.router)
 
     def _register_routers(self) -> None:
