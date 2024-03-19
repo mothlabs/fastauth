@@ -1,3 +1,5 @@
+from typing import Type
+
 from fastapi import APIRouter, FastAPI
 
 from fastauth.models.user import FastUser
@@ -7,7 +9,7 @@ from fastauth.services import AuthenticationService
 class FastAuth:
     def __init__(
         self,
-        user_model: FastUser,
+        user_model: Type[FastUser],
         prefix: str = "/auth",
         tags: list[str] | None = None,
     ) -> None:
