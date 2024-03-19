@@ -13,5 +13,5 @@ class FastAuth:
         self.user_model = user_model
         self.router = APIRouter(prefix=prefix, tags=tags or ["auth"])
 
-    def register(self, app: FastAPI):
+    def register(self, app: FastAPI) -> None:
         app.include_router(self.router)
