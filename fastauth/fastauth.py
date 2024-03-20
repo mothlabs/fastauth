@@ -29,7 +29,7 @@ class FastAuth:
         async def register(body: RegisterUserRequest) -> RegisterUserResponse:
 
             user = self.service.register_user(
-                **body.model_dump_json(),
+                **body.model_dump(),
             )
 
             return RegisterUserResponse(user=user)
