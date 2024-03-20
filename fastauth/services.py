@@ -2,6 +2,7 @@ import secrets
 from typing import Type
 
 import bcrypt
+from loguru import logger
 
 from fastauth.exceptions import UserAlreadyExists
 from fastauth.models.user import FastUser

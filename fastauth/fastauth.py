@@ -1,6 +1,7 @@
 from typing import Type
 
 from fastapi import APIRouter, FastAPI
+from loguru import logger
 
 from fastauth.models.schemas import RegisterUserRequest, RegisterUserResponse
 from fastauth.models.user import FastUser
