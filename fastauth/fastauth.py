@@ -28,7 +28,7 @@ class FastAuth:
         @self.router.post("/register")
         async def register(body: RegisterUserRequest) -> RegisterUserResponse:
 
-            user = self.service.register_user(
+            user = await self.service.register_user(
                 **body.model_dump(),
             )
 
