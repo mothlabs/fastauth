@@ -45,6 +45,8 @@ class AuthenticationService:
 
         logger.debug(f"Recached user with ID '{user_id}'. Primary key is '{cache.pk}'.")
 
+        return cache
+
     async def is_authenticated(self, user_id: str, access_token: str) -> bool:
         """
         Check if the provided user and its access token is authenticated.
