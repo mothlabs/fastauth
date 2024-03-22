@@ -3,7 +3,12 @@ from typing import Type
 from fastapi import APIRouter, FastAPI
 from loguru import logger
 
-from fastauth.models.schemas import RegisterUserRequest, RegisterUserResponse
+from fastauth.models.schemas import (
+    LoginUserRequest,
+    LoginUserResponse,
+    RegisterUserRequest,
+    RegisterUserResponse,
+)
 from fastauth.models.user import FastUser
 from fastauth.services import AuthenticationService
 
@@ -33,5 +38,14 @@ class FastAuth:
             )
 
             return RegisterUserResponse(user=user)
+
+        @self.router.post("/login")
+        async def login(body: LoginUserRequest) -> LoginUserResponse:
+
+            user = await self.service.login_user(
+                **body.model_dump(),
+            )
+
+            return LoginUserResponse(user=user, access_token=user.access_token)
 
         logger.info(f"Registered routers for FastAuth at '{self.router.prefix}'")
