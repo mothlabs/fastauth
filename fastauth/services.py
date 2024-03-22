@@ -4,7 +4,7 @@ from typing import Type
 import bcrypt
 from loguru import logger
 
-from fastauth.exceptions import UserAlreadyExists
+from fastauth.exceptions import Unauthenticated, UserAlreadyExists
 from fastauth.models.user import FastUser
 
 
@@ -57,3 +57,32 @@ class AuthenticationService:
         logger.info(f"Registered user with email '{email}'.")
 
         return user
+
+    async def login_user(self, email: str, password: str) -> FastUser:
+        """
+        Login a user.
+
+        Parameters
+        ----------
+        email : str
+            The email of the user.
+        password : str
+            The password of the user.
+
+        Returns
+        -------
+        FastUser
+            The logged in user.
+        """
+
+        user = await self.user_model.find_one(self.user_model.email == email)
+        if user:
+            if bcrypt.checkpw(password.encode("utf-8"), user.password):
+                user.authenticated = True
+                await user.save()
+
+                logger.info(f"Logged in user with email '{email}'.")
+
+                return user
+
+        raise Unauthenticated
