@@ -2,6 +2,7 @@ import uuid
 
 from beanie import Document
 from pydantic import Field
+from redis_om import Field as OMField
 from redis_om import HashModel
 
 
@@ -19,5 +20,5 @@ class FastUser(Document):
 
 
 class CachedUser(HashModel):
-    id: str
-    access_token: str
+    id: str = OMField(index=True)
+    access_token: str = OMField(index=True)
