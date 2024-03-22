@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Callable, Coroutine, Type
 
 from fastapi import APIRouter, FastAPI
 from loguru import logger
@@ -11,6 +11,7 @@ from fastauth.models.schemas import (
 )
 from fastauth.models.user import FastUser
 from fastauth.services import AuthenticationService
+from fastauth.types import EventType
 
 
 class FastAuth:
@@ -23,6 +24,25 @@ class FastAuth:
         self.user_model = user_model
         self.router = APIRouter(prefix=prefix, tags=tags or ["auth"])
         self.service = AuthenticationService(user_model=user_model)
+
+    def register_event(
+        self,
+        event: EventType,
+        handler: Callable[..., Coroutine[None, None, None]],
+    ) -> None:
+        """
+        Register a event handler. Only one event handler can be registered per event
+        for now.
+
+        Parameters
+        ----------
+        event : EventType
+            The event to register the handler for.
+        handler : Callable[..., Coroutine[None, None, None]]
+            The handler to register.
+        """
+
+        self.service.events[event] = handler
 
     def register(self, app: FastAPI) -> None:
         self._register_routers()
