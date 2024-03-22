@@ -1,3 +1,4 @@
+import functools
 from typing import Callable, Coroutine, Type
 
 from fastapi import APIRouter, FastAPI
@@ -43,6 +44,23 @@ class FastAuth:
         """
 
         self.service.events[event] = handler
+
+    def on(self, event: EventType):
+        """
+        A decorator that registers the decorated coroutine as a event handler for
+        the given event type.
+
+        Parameters
+        ----------
+        event : EventType
+            The event to register the handler for.
+        """
+
+        def wrapper(handler: Callable[..., Coroutine[None, None, None]]):
+            self.register_event(event, handler)
+            return handler
+
+        return functools.wraps(wrapper)(wrapper)
 
     def register(self, app: FastAPI) -> None:
         self._register_routers()
