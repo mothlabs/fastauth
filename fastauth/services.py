@@ -3,11 +3,11 @@ from typing import Callable, Coroutine, Type
 
 import bcrypt
 from loguru import logger
+from redis_om import NotFoundError
 
 from fastauth.exceptions import Unauthenticated, UserAlreadyExists
 from fastauth.models.user import CachedUser, FastUser
 from fastauth.types import EventType
-from redis_om import NotFoundError
 
 
 class AuthenticationService:
