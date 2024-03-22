@@ -2,6 +2,7 @@ import uuid
 
 from beanie import Document
 from pydantic import Field
+from redis_om import HashModel
 
 
 class FastUser(Document):
@@ -15,3 +16,8 @@ class FastUser(Document):
 
     class Settings:
         name = "users"
+
+
+class CachedUser(HashModel):
+    id: str
+    access_token: str
