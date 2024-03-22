@@ -44,6 +44,28 @@ class AuthenticationService:
 
         logger.debug(f"Recached user with ID '{user_id}'. Primary key is '{cache.pk}'.")
 
+    def is_authenticated(self, user_id: str, access_token: str) -> bool:
+        """
+        Check if the provided user and its access token is authenticated.
+        """
+
+        cache = CachedUser.find(
+            CachedUser.id == user_id, CachedUser.access_token == access_token
+        ).first()
+
+        if cache is not None:
+            return True
+
+        user = self.user_model.find_one(
+            self.user_model.id == user_id,
+            self.user_model.access_token == access_token,
+        )
+        if user is not None:
+            self.recache(user_id, access_token)
+            return True
+
+        return False
+
     async def register_user(self, email: str, password: str) -> FastUser:
         """
         Register a new user.
