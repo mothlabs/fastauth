@@ -11,5 +11,7 @@ class FastUser(Document):
     password: bytes = Field(exclude=True)
     access_token: str = Field(exclude=True)
 
+    authenticated: bool = False
+
     class Settings:
         name = "users"
