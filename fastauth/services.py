@@ -7,6 +7,7 @@ from loguru import logger
 from fastauth.exceptions import Unauthenticated, UserAlreadyExists
 from fastauth.models.user import CachedUser, FastUser
 from fastauth.types import EventType
+from redis_om import NotFoundError
 
 
 class AuthenticationService:
@@ -49,9 +50,12 @@ class AuthenticationService:
         Check if the provided user and its access token is authenticated.
         """
 
-        cache = CachedUser.find(
-            CachedUser.id == user_id, CachedUser.access_token == access_token
-        ).first()
+        try:
+            cache = CachedUser.find(
+                CachedUser.id == user_id, CachedUser.access_token == access_token
+            ).first()
+        except NotFoundError:
+            cache = None
 
         if cache is not None:
             return True
