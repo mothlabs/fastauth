@@ -44,7 +44,9 @@ async def is_authenticated(
     if x_user_id is None or x_access_token is None:
         return False
 
-    return auth.service.is_authenticated(user_id=x_user_id, access_token=x_access_token)
+    return await auth.service.is_authenticated(
+        user_id=x_user_id, access_token=x_access_token
+    )
 
 
 IsAuthenticatedDependency = Annotated[bool, Depends(is_authenticated)]
