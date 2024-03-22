@@ -5,7 +5,7 @@ import bcrypt
 from loguru import logger
 
 from fastauth.exceptions import Unauthenticated, UserAlreadyExists
-from fastauth.models.user import FastUser
+from fastauth.models.user import CachedUser, FastUser
 from fastauth.types import EventType
 
 
@@ -25,6 +25,24 @@ class AuthenticationService:
         """
 
         return secrets.token_hex(24)
+
+    def recache(self, user_id: str, access_token: str) -> CachedUser:
+        """
+        Recache a user's access token.
+
+        Parameters
+        ----------
+        user_id : str
+            The ID of the user.
+        access_token : str
+            The access token.
+        """
+
+        cache = CachedUser(id=user_id, access_token=access_token)
+        cache.save()
+        cache.expire(600)
+
+        logger.debug(f"Recached user with ID '{user_id}'. Primary key is '{cache.pk}'.")
 
     async def register_user(self, email: str, password: str) -> FastUser:
         """
@@ -61,6 +79,7 @@ class AuthenticationService:
         )
         await user.save()
 
+        self.recache(user.id, access_token)
         logger.info(f"Registered user with email '{email}'.")
 
         if "on_register" in self.events:
@@ -96,6 +115,7 @@ class AuthenticationService:
                 user.authenticated = True
                 await user.save()
 
+                self.recache(user.id, user.access_token)
                 logger.info(f"Logged in user with email '{email}'.")
 
                 if "on_login" in self.events:
