@@ -1,7 +1,7 @@
 import uuid
 
 from beanie import Document
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 
 class FastUser(Document):
