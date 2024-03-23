@@ -20,5 +20,6 @@ class FastUser(Document):
 
 
 class CachedUser(HashModel):
+    authenticated: int = 0
     id: str = OMField(index=True)
     access_token: str = OMField(index=True)

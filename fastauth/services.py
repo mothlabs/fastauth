@@ -27,7 +27,9 @@ class AuthenticationService:
 
         return secrets.token_hex(24)
 
-    def recache(self, user_id: str, access_token: str) -> CachedUser:
+    def recache(
+        self, user_id: str, access_token: str, authenticated: bool = False
+    ) -> CachedUser:
         """
         Recache a user's access token.
 
@@ -37,9 +39,16 @@ class AuthenticationService:
             The ID of the user.
         access_token : str
             The access token.
+        authenticated : bool
+            Whether the user is authenticated.
         """
 
-        cache = CachedUser(id=user_id, access_token=access_token)
+        cache = CachedUser(
+            id=user_id,
+            access_token=access_token,
+            authenticated=1 if authenticated else 0,
+        )
+
         cache.save()
         cache.expire(600)
 
@@ -53,25 +62,29 @@ class AuthenticationService:
         """
 
         try:
-            cache = CachedUser.find(
+            cache: CachedUser | None = CachedUser.find(
                 CachedUser.id == user_id, CachedUser.access_token == access_token
             ).first()
         except NotFoundError:
             cache = None
 
         if cache is not None:
-            return True
+            if cache.authenticated == 1:
+                return True
+            return False
 
         user = await self.user_model.find_one(
             self.user_model.id == user_id,
             self.user_model.access_token == access_token,
         )
 
+        authenticated = False
         if user is not None:
-            self.recache(user_id, access_token)
-            return True
+            authenticated = True
 
-        return False
+        self.recache(user_id, access_token, authenticated=authenticated)
+
+        return authenticated
 
     async def register_user(self, email: str, password: str) -> FastUser:
         """
@@ -108,7 +121,7 @@ class AuthenticationService:
         )
         await user.save()
 
-        self.recache(user.id, access_token)
+        self.recache(user.id, access_token, authenticated=True)
         logger.info(f"Registered user with email '{email}'.")
 
         if "on_register" in self.events:
@@ -144,7 +157,7 @@ class AuthenticationService:
                 user.authenticated = True
                 await user.save()
 
-                self.recache(user.id, user.access_token)
+                self.recache(user.id, user.access_token, authenticated=True)
                 logger.info(f"Logged in user with email '{email}'.")
 
                 if "on_login" in self.events:
