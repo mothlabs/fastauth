@@ -10,12 +10,9 @@ class UserAlreadyExists(HTTPException):
         )
 
 
-class UserDoesNotExist(HTTPException):
-    def __init__(self, email: str) -> None:
-        super().__init__(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"A user with the email '{email}' does not exist.",
-        )
+class UserNotFound(HTTPException):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(status_code=status.HTTP_404_NOT_FOUND, *args, **kwargs)
 
 
 class Unauthenticated(HTTPException):
