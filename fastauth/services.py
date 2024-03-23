@@ -96,6 +96,11 @@ class AuthenticationService:
         on_register : Callable[[FastUser], Coroutine[None, None, None]]
             Called when a new user is registered. The user is passed as a parameter.
 
+        Raises
+        ------
+        UserAlreadyExists
+            If the user already exists.
+
         Parameters
         ----------
         email : str
@@ -138,6 +143,11 @@ class AuthenticationService:
         ------
         on_login : Callable[[FastUser], Coroutine[None, None, None]]
             Called when a user is logged in. The user is passed as a parameter.
+
+        Raises
+        ------
+        Unauthenticated
+            If the user is not authenticated.
 
         Parameters
         ----------
