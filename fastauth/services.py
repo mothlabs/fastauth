@@ -6,7 +6,7 @@ import bcrypt
 from loguru import logger
 from redis_om import NotFoundError
 
-from fastauth.exceptions import Unauthenticated, UserAlreadyExists
+from fastauth.exceptions import Unauthenticated, UserAlreadyExists, UserNotFound
 from fastauth.models.user import CachedUser, FastUser
 from fastauth.types import EventType
 
@@ -182,3 +182,35 @@ class AuthenticationService:
                 return user
 
         raise Unauthenticated
+
+    async def delete_user(self, user_id: str) -> None:
+        """
+        Delete a user.
+
+        Events
+        ------
+        on_delete : Callable[[FastUser], Coroutine[None, None, None]]
+            Called when a user is deleted. The user is passed as a parameter.
+
+        Raises
+        ------
+        UserNotFound
+            If the user is not found.
+
+        Parameters
+        ----------
+        user_id : str
+            The ID of the user.
+        """
+
+        user = await self.user_model.find_one(self.user_model.id == user_id)
+        if user is None:
+            raise UserNotFound(detail={"user_id": user_id})
+
+        await user.delete()
+
+        logger.info(f"Deleted user with ID '{user_id}'.")
+        if "on_delete" in self.events:
+            await self.events["on_delete"](user)
+
+        self.recache(user.id, user.access_token, authenticated=False)
