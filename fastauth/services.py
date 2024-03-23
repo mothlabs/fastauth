@@ -44,11 +44,16 @@ class AuthenticationService:
             Whether the user is authenticated.
         """
 
-        cache = CachedUser(
-            id=user_id,
-            access_token=access_token,
-            authenticated=1 if authenticated else 0,
-        )
+        try:
+            cache: CachedUser = CachedUser.find(CachedUser.id == user_id).first()
+            cache.access_token = access_token
+            cache.authenticated = 1 if authenticated else 0
+        except NotFoundError:
+            cache = CachedUser(
+                id=user_id,
+                access_token=access_token,
+                authenticated=1 if authenticated else 0,
+            )
 
         cache.save()
         cache.expire(600)
