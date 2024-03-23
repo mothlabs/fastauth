@@ -1,3 +1,4 @@
+import datetime as dt
 import secrets
 from typing import Callable, Coroutine, Type
 
@@ -154,7 +155,7 @@ class AuthenticationService:
         user = await self.user_model.find_one(self.user_model.email == email)
         if user:
             if bcrypt.checkpw(password.encode("utf-8"), user.password):
-                user.authenticated = True
+                user.last_login = dt.datetime.now(tz=dt.timezone.utc)
                 await user.save()
 
                 self.recache(user.id, user.access_token, authenticated=True)

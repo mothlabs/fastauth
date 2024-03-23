@@ -1,3 +1,4 @@
+import datetime as dt
 import uuid
 
 from beanie import Document
@@ -13,7 +14,7 @@ class FastUser(Document):
     password: bytes = Field(exclude=True)
     access_token: str = Field(exclude=True)
 
-    authenticated: bool = False
+    last_login: dt.datetime | None = None
 
     class Settings:
         name = "users"
