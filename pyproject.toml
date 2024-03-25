@@ -3,7 +3,7 @@ authors = ["Chorlte my balls <philmattdev@gmail.com>"]
 description = "FastAuth is a in-house FastAPI authentication library that simplifiesthe process of handling user authentication."
 name = "fastauth"
 readme = "README.md"
-version = "0.1.0"
+version = "0.1.1"
 
 [tool.poetry.dependencies]
 bcrypt = "^4.1.2"
