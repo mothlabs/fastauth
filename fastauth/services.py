@@ -4,6 +4,7 @@ from typing import Callable, Coroutine, Type
 
 import bcrypt
 from loguru import logger
+from redis import ResponseError
 from redis_om import NotFoundError
 
 from fastauth.exceptions import Unauthenticated, UserAlreadyExists, UserNotFound
@@ -71,7 +72,7 @@ class AuthenticationService:
             cache: CachedUser | None = CachedUser.find(
                 CachedUser.id == user_id, CachedUser.access_token == access_token
             ).first()
-        except NotFoundError:
+        except (NotFoundError, ResponseError):
             cache = None
 
         if cache is not None:
