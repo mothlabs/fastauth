@@ -7,11 +7,11 @@ version = "0.1.1"
 
 [tool.poetry.dependencies]
 bcrypt = "^4.1.2"
-beanie = "^1.25.0"
-fastapi = "^0.110.0"
+beanie = "^1.26.0"
+fastapi = "^0.115.0"
 loguru = "^0.7.2"
 python = "^3.11"
-redis-om = "^0.2.1"
+redis-om = "^0.3.2"
 uvicorn = "^0.28.1"
 
 [build-system]
